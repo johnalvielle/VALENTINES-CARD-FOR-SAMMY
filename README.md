@@ -4,6 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Interactive Love Story Valentine's Invitation for Samantha Reiko</title>
+    <!-- Open Graph for better social media sharing -->
+    <meta property="og:title" content="A Cute Valentine's Surprise for Samantha Reiko">
+    <meta property="og:description" content="An interactive love story with bears and capybaras. Tap, drag, and celebrate! 💖🐻🦫">
+    <meta property="og:image" content="https://i.imgur.com/placeholder-image.jpg"> <!-- Replace with a screenshot or cute image URL for sharing -->
+    <meta property="og:url" content="https://yourusername.github.io/valentine-invitation/"> <!-- Replace with your GitHub Pages URL -->
+    <meta property="og:type" content="website">
+    <!-- Simple emoji favicon -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💖</text></svg>">
     <style>
         /* Reset and base styles for a soft, dreamy storybook vibe */
         * {
@@ -78,6 +86,7 @@
             filter: drop-shadow(0 0 5px rgba(255, 182, 193, 0.5)); /* Sparkle effect */
             cursor: pointer;
             user-select: none;
+            transition: opacity 0.3s ease; /* Smooth feedback on click */
         }
         .heart.glowing { /* For Scene 3 */
             animation: glow 1s ease-in-out infinite alternate;
@@ -113,7 +122,7 @@
             background: linear-gradient(45deg, #ffe4e1, #fff8dc);
             color: #8b4513;
         }
-        #yesBtn:hover { transform: scale(1.1); }
+        #yesBtn:hover { transform: scale(1.1); box-shadow: 0 8px 20px rgba(255, 228, 225, 0.5); }
         #noBtn {
             background: linear-gradient(45deg, #fff8dc, #f5deb3);
             color: #8b4513;
@@ -199,10 +208,9 @@
 </head>
 <body>
     <!-- Background music: 100% instrumental, cute kawaii style, soft music box/gentle piano/warm lo-fi, volume 10-15%, starts after first interaction, soft looping -->
+    <!-- To replace: Download a free instrumental track from Freesound.org (e.g., "soft piano lullaby"), upload to Imgur/Dropbox for a public URL, and update the src below. -->
     <audio id="bgMusic" muted autoplay loop volume="0.1"> <!-- Volume set to 10% -->
-        <!-- Replace with a free 100% instrumental cute kawaii music URL (e.g., soft music box melody from freesound.org or similar). Ensure no vocals/speech/lyrics/sound effects. Placeholder for demo. -->
-        <source src="https://www.soundjay.com/misc/sounds/gentle-piano-01.wav" type="audio/wav">
- <!-- Placeholder; user must replace with appropriate instrumental track -->
+        <source src="https://www.soundjay.com/misc/sounds/gentle-piano-01.wav" type="audio/wav"> <!-- Replace with your hosted URL -->
         Your browser does not support the audio element.
     </audio>
 
@@ -262,12 +270,12 @@
 
     <script>
         // JavaScript for interactive story progression and mini-games
-
         // Scene management variables
         let currentScene = 1;
         const totalScenes = 5;
         const scenes = document.querySelectorAll('.scene');
 
+        // Function to advance to the next scene
         function nextScene() {
             if (currentScene < totalScenes) {
                 scenes[currentScene - 1].classList.remove('active');
@@ -281,9 +289,9 @@
         function startMusic() {
             if (!musicStarted) {
                 const bgMusic = document.getElementById('bgMusic');
-                bgMusic.volume = 0.1; // 10% volume
+                bgMusic.volume = 0.1; // 10% volume for soft play
                 bgMusic.muted = false;
-                bgMusic.play();
+                bgMusic.play().catch(e => console.log('Audio play failed:', e)); // Handle autoplay restrictions
                 musicStarted = true;
             }
         }
@@ -293,17 +301,17 @@
         const hearts = [document.getElementById('heart1'), document.getElementById('heart2'), document.getElementById('heart3')];
         hearts.forEach(heart => {
             heart.addEventListener('click', () => {
-                startMusic(); // Start music on interaction
+                startMusic(); // Start music on first interaction
                 tapCount++;
                 heart.style.opacity = '0.5'; // Visual feedback
                 if (tapCount >= 3) {
                     document.getElementById('tapHint').style.display = 'none';
-                    setTimeout(nextScene, 500);
+                    setTimeout(nextScene, 500); // Delay for smooth transition
                 }
             });
         });
 
-        // Scene 2: Drag bear to capybara
+        // Scene 2: Drag bear to capybara (improved sensitivity)
         const draggableBear = document.getElementById('draggableBear');
         const targetCapybara = document.getElementById('targetCapybara');
         let isDragging = false;
@@ -327,18 +335,18 @@
         document.addEventListener('mouseup', () => {
             if (isDragging) {
                 isDragging = false;
-                // Check if bear is near capybara
+                // Check proximity with improved threshold
                 const bearRect = draggableBear.getBoundingClientRect();
                 const capyRect = targetCapybara.getBoundingClientRect();
                 const distance = Math.sqrt((bearRect.left - capyRect.left) ** 2 + (bearRect.top - capyRect.top) ** 2);
-                if (distance < 100) { // Proximity threshold
+                if (distance < 120) { // Slightly larger threshold for easier interaction
                     document.getElementById('dragHint').style.display = 'none';
                     setTimeout(nextScene, 500);
                 }
             }
         });
 
-        // Touch events for mobile
+        // Touch events for mobile (improved for touch devices)
         draggableBear.addEventListener('touchstart', (e) => {
             isDragging = true;
             const touch = e.touches[0];
@@ -352,86 +360,3 @@
                 const touch = e.touches[0];
                 draggableBear.style.left = (touch.clientX - offsetX) + 'px';
                 draggableBear.style.top = (touch.clientY - offsetY) + 'px';
-            }
-        });
-
-        document.addEventListener('touchend', () => {
-            if (isDragging) {
-                isDragging = false;
-                // Same proximity check as mouse
-                const bearRect = draggableBear.getBoundingClientRect();
-                const capyRect = targetCapybara.getBoundingClientRect();
-                const distance = Math.sqrt((bearRect.left - capyRect.left) ** 2 + (bearRect.top - capyRect.top) ** 2);
-                if (distance < 100) {
-                    document.getElementById('dragHint').style.display = 'none';
-                    setTimeout(nextScene, 500);
-                }
-            }
-        });
-
-        // Scene 3: Click glowing heart to continue
-        const glowingHeart = document.getElementById('glowingHeart');
-        glowingHeart.addEventListener('click', () => {
-            document.getElementById('clickHint').style.display = 'none';
-            setTimeout(nextScene, 500);
-        });
-
-        // Scene 4: NO button runs away
-        const noBtn = document.getElementById('noBtn');
-        function moveNoBtn() {
-            const maxX = window.innerWidth - noBtn.offsetWidth;
-            const maxY = window.innerHeight - noBtn.offsetHeight;
-            const newX = Math.random() * maxX;
-            const newY = Math.random() * maxY;
-            noBtn.style.position = 'fixed';
-            noBtn.style.left = newX + 'px';
-            noBtn.style.top = newY + 'px';
-            noBtn.style.transition = 'all 0.5s ease';
-        }
-        noBtn.addEventListener('mouseover', moveNoBtn);
-        noBtn.addEventListener('click', moveNoBtn);
-
-        // YES button: Trigger celebration
-        const yesBtn = document.getElementById('yesBtn');
-        const popup = document.getElementById('popup');
-        const celebration = document.querySelector('.celebration');
-
-        yesBtn.addEventListener('click', () => {
-            // Hide buttons and advance to celebration
-            document.querySelector('.buttons').style.display = 'none';
-            scenes[3].classList.remove('active'); // Hide Scene 4
-            scenes[4].classList.add('active'); // Show Scene 5
-            popup.style.display = 'flex';
-
-            // Add confetti
-            for (let i = 0; i < 50; i++) {
-                const confetti = document.createElement('div');
-                confetti.className = 'confetti';
-                confetti.style.left = Math.random() * 100 + '%';
-                confetti.style.background = `hsl(${Math.random() * 360}, 100%, 50%)`;
-                confetti.style.animationDelay = Math.random() * 2 + 's';
-                celebration.appendChild(confetti);
-                setTimeout
-                setTimeout(() => confetti.remove(), 4000);
-            }
-
-            // Add burst hearts
-            for (let i = 0; i < 20; i++) {
-                const burstHeart = document.createElement('div');
-                burstHeart.className = 'burst-heart';
-                burstHeart.textContent = '💖';
-                burstHeart.style.left = Math.random() * 100 + '%';
-                burstHeart.style.top = Math.random() * 100 + '%';
-                burstHeart.style.animationDelay = Math.random() * 1 + 's';
-                celebration.appendChild(burstHeart);
-                setTimeout(() => burstHeart.remove(), 3000);
-            }
-        });
-
-        // Close popup on click
-        popup.addEventListener('click', () => {
-            popup.style.display = 'none';
-        });
-    </script>
-</body>
-</html>
