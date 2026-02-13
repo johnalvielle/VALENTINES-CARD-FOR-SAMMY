@@ -1,5 +1,3 @@
-# VALENTINES-CARD-FOR-SAMMY
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
